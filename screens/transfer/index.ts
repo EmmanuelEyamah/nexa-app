@@ -4,3 +4,6 @@ export * from "./AddRecipient";
 export * from "./ReviewTransfer";
 export * from "./Processing";
 export * from "./Success";
+export * from "./Receive";
+export * from "./Convert";
+export * from "./Fund";

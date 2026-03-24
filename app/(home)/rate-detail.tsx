@@ -9,6 +9,8 @@ export default function RateDetailPage() {
     <RateDetail
       rateId={(id as string) || "1"}
       onBack={() => router.back()}
+      onConvert={() => router.push("/(transfer)/convert")}
+      onSwap={() => router.push("/(transfer)/convert")}
     />
   );
 }

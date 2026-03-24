@@ -4,6 +4,7 @@ import { colors } from "@/utils/colors";
 import { fs, hp, SCREEN_WIDTH, wp } from "@/utils/config";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -183,6 +184,7 @@ const WalletCard = ({
 };
 
 export const Wallets = () => {
+  const router = useRouter();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
@@ -338,6 +340,12 @@ export const Wallets = () => {
               key={action.label}
               style={styles.actionItem}
               activeOpacity={0.7}
+              onPress={() => {
+                if (action.label === "Fund") router.push("/(transfer)/fund");
+                if (action.label === "Send") router.push("/(transfer)/send-money");
+                if (action.label === "Receive") router.push("/(transfer)/receive");
+                if (action.label === "Convert") router.push("/(transfer)/convert");
+              }}
             >
               <View style={styles.actionIcon}>
                 <Ionicons

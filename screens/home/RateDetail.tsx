@@ -16,6 +16,8 @@ import {
 interface RateDetailProps {
   rateId: string;
   onBack: () => void;
+  onConvert?: () => void;
+  onSwap?: () => void;
 }
 
 type TimeRange = "1H" | "1D" | "1W" | "1M" | "1Y";
@@ -257,7 +259,7 @@ const ChartWithScrub = ({
   );
 };
 
-export const RateDetail = ({ rateId, onBack }: RateDetailProps) => {
+export const RateDetail = ({ rateId, onBack, onConvert, onSwap }: RateDetailProps) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("1D");
   const rate = liveRates.find((r) => r.id === rateId) || liveRates[0];
   const changeColor =
@@ -469,14 +471,14 @@ export const RateDetail = ({ rateId, onBack }: RateDetailProps) => {
         <View style={styles.ctaSection}>
           <AppButton
             title={`Convert ${rate.from} → ${rate.to}`}
-            onPress={() => {}}
+            onPress={() => onConvert?.()}
             variant="primary"
             size="large"
             fullWidth
           />
           <AppButton
             title="Swap currencies"
-            onPress={() => {}}
+            onPress={() => onSwap?.()}
             variant="secondary"
             size="large"
             fullWidth

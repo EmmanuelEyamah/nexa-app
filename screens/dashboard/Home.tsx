@@ -4,18 +4,20 @@ import { LiveRateTicker } from "@/components/LiveRateTicker";
 import { PromoBanner } from "@/components/PromoBanner";
 import { ThemedText } from "@/components/ThemedText";
 import { TransactionCard } from "@/components/TransactionCard";
+import { TransactionDetailSheet } from "@/components/TransactionDetailSheet";
 import {
   currencyBalances,
   liveRates,
   promoBanners,
   quickActions,
+  RecentTransaction,
   recentTransactions,
 } from "@/constants/data";
 import { colors } from "@/utils/colors";
 import { hp, wp } from "@/utils/config";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -33,6 +35,7 @@ const getGreeting = () => {
 
 export const Home = () => {
   const router = useRouter();
+  const [selectedTxn, setSelectedTxn] = useState<RecentTransaction | null>(null);
   const sectionAnims = useRef(
     Array.from({ length: 6 }, () => ({
       opacity: new Animated.Value(0),
@@ -81,15 +84,17 @@ export const Home = () => {
           </View>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.iconButton} activeOpacity={0.7} onPress={() => router.push("/(home)/notifications")}>
             <Ionicons name="notifications-outline" size={wp(20)} color={colors.text.primary} />
             <View style={styles.notifDot} />
           </TouchableOpacity>
-          <Image
-            source={{ uri: "https://i.pravatar.cc/100?img=12" }}
-            style={styles.avatar}
-            contentFit="cover"
-          />
+          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/(dashboard)/profile")}>
+            <Image
+              source={{ uri: "https://i.pravatar.cc/100?img=12" }}
+              style={styles.avatar}
+              contentFit="cover"
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -111,6 +116,9 @@ export const Home = () => {
               activeOpacity={0.7}
               onPress={() => {
                 if (action.id === "send") router.push("/(transfer)/send-money");
+                if (action.id === "receive") router.push("/(transfer)/receive");
+                if (action.id === "convert") router.push("/(transfer)/convert");
+                if (action.id === "fund") router.push("/(transfer)/fund");
               }}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: action.color + "10", borderColor: action.color + "15" }]}>
@@ -148,7 +156,7 @@ export const Home = () => {
                 Your latest transactions
               </ThemedText>
             </View>
-            <TouchableOpacity activeOpacity={0.7} style={styles.seeAllButton}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.seeAllButton} onPress={() => router.push("/(dashboard)/transactions")}>
               <ThemedText variant="caption" weight="semiBold" color="accent">
                 See all
               </ThemedText>
@@ -157,7 +165,7 @@ export const Home = () => {
           </View>
           <View style={styles.transactionsList}>
             {recentTransactions.map((txn) => (
-              <TransactionCard key={txn.id} transaction={txn} />
+              <TransactionCard key={txn.id} transaction={txn} onPress={() => setSelectedTxn(txn)} />
             ))}
           </View>
         </Animated.View>
@@ -170,6 +178,14 @@ export const Home = () => {
           </ThemedText>
         </Animated.View>
       </ScrollView>
+
+      {selectedTxn && (
+        <TransactionDetailSheet
+          transaction={selectedTxn}
+          visible={!!selectedTxn}
+          onClose={() => setSelectedTxn(null)}
+        />
+      )}
     </View>
   );
 };
